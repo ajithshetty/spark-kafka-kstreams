@@ -1,0 +1,1 @@
+sh /opt/spark/bin/spark-submit --master spark://spark-master:7077 --total-executor-cores 1 --executor-memory 512M --jars $(echo /opt/airflow/jars/*.jar | tr ' ' ',') --class AbrisSchemaRegistry /opt/spark-scala-schema-registry-apps/spark-scala-schema-registry-streaming-1.0-SNAPSHOT-jar-with-dependencies.jar

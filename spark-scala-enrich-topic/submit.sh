@@ -1,0 +1,1 @@
+docker-compose exec spark-master sh /opt/spark-scala-enrich-topic-apps/submit_job.sh

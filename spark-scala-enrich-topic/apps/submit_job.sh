@@ -1,0 +1,1 @@
+sh /opt/spark/bin/spark-submit --master spark://spark-master:7077 --total-executor-cores 1 --executor-memory 512M --jars $(echo /opt/airflow/jars/*.jar | tr ' ' ',') --class EnrichTopic /opt/spark-scala-enrich-topic-apps/spark-scala-enrich-topic-streaming-1.0-SNAPSHOT-jar-with-dependencies.jar
