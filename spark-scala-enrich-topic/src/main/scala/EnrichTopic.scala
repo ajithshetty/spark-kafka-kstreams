@@ -61,15 +61,15 @@ try {
 
 
   writeQueryParsed
-  .select(writeQueryParsed("key").cast("string"),
-    writeQueryParsed("value").cast("string"))
+  .select(writeQueryParsed("key").cast("string"), writeQueryParsed("value").cast("string"))
     .writeStream
-  .outputMode("complete")
-  .format("kafka")
-  .option("kafka.bootstrap.servers", properties.getProperty("kafka_server"))
-  .option("topic", properties.getProperty("kafka_output_topic"))
-  .option("checkpointLocation", s"s3a://${properties.getProperty("base_bucket")}/checkpoint-rejected-enrich-topic/")
-  .start().awaitTermination()
+    .outputMode("complete")
+    .format("kafka")
+    .option("kafka.bootstrap.servers", properties.getProperty("kafka_server"))
+    .option("topic", properties.getProperty("kafka_output_topic"))
+    .option("checkpointLocation", s"s3a://${properties.getProperty("base_bucket")}/checkpoint-rejected-enrich-topic/")
+    .start()
+    .awaitTermination()
 }catch {
   case e: Exception =>
       println(e.getMessage)

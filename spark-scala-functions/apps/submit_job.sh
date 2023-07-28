@@ -1,0 +1,1 @@
+sh /opt/spark/bin/spark-submit --master spark://spark-master:7077 --total-executor-cores 1 --executor-memory 512M --jars $(echo /opt/airflow/jars/*.jar | tr ' ' ',') --class TransformData /opt/spark-scala-functions-apps/spark-scala-functions-1.0-SNAPSHOT-jar-with-dependencies.jar
