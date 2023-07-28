@@ -15,3 +15,5 @@ spark-scala-schema-registry/apps/*.jar
 spark-scala-schema-registry/target
 spark-scala-enrich-topic/apps/*.jar
 spark-scala-enrich-topic/target
+spark-scala-functions/target
+spark-scala-functions/apps/*.jar

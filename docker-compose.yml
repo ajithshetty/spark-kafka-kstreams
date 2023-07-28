@@ -167,6 +167,9 @@ services:
       - ./spark-scala-schema-registry/data:/opt/spark-scala-schema-registry-data
       - ./spark-scala-enrich-topic/apps:/opt/spark-scala-enrich-topic-apps
       - ./spark-scala-enrich-topic/data:/opt/spark-scala-enrich-topic-data
+      - ./spark-scala-functions/apps:/opt/spark-scala-functions-apps
+      - ./spark-scala-functions/data:/opt/spark-scala-functions-data
+
 
   spark-worker-1:
     build: .
@@ -194,6 +197,8 @@ services:
       - ./spark-scala-schema-registry/data:/opt/spark-scala-schema-registry-data
       - ./spark-scala-enrich-topic/apps:/opt/spark-scala-enrich-topic-apps
       - ./spark-scala-enrich-topic/data:/opt/spark-scala-enrich-topic-data
+      - ./spark-scala-functions/apps:/opt/spark-scala-functions-apps
+      - ./spark-scala-functions/data:/opt/spark-scala-functions-data
 
   spark-worker-2:
     build: .
@@ -221,6 +226,8 @@ services:
       - ./spark-scala-schema-registry/data:/opt/spark-scala-schema-registry-data
       - ./spark-scala-enrich-topic/apps:/opt/spark-scala-enrich-topic-apps
       - ./spark-scala-enrich-topic/data:/opt/spark-scala-enrich-topic-data
+      - ./spark-scala-functions/apps:/opt/spark-scala-functions-apps
+      - ./spark-scala-functions/data:/opt/spark-scala-functions-data
 
   minio:
     image: minio/minio

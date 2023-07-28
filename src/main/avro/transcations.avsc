@@ -1,0 +1,27 @@
+{
+  "namespace": "io.confluent.developer.avro",
+  "type": "record",
+  "name": "Transactions",
+  "fields": [
+    {
+      "name": "transaction_id",
+      "type": "long"
+    },
+    {
+      "name": "time",
+      "type": "long"
+    },
+    {
+      "name": "created_date",
+      "type": "long"
+    },
+    {
+      "name": "created_by",
+      "type": "string"
+    },
+    {
+      "name": "job_level",
+      "type": "long"
+    }
+  ]
+}
