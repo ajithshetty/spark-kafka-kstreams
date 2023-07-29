@@ -70,7 +70,10 @@ We have multiple example and use cases with Spark Streaming.
 |[spark-python](spark-python/README.md)                                |
 |[spark-scala](spark-scala/README.md)                                  |
 
-## 3. Kstreams with Schema Registry
+## 3. KStreams with Schema Registry
+Can be viewed from KAFKA UI. More details to follow.
+## 4. Kafka REST API
+[List of Commands](kafka-rest/README.md)
 
 ## 4. Connect KStreams with Spark Streaming
 We have multiple example and use cases with Spark Streaming.
@@ -81,13 +84,13 @@ We have multiple example and use cases with Spark Streaming.
 |[spark-scala-functions](spark-scala-functions/README.md)              |
 
 
-## 5. Connect Spark Streaming with KStreams
+## 6. Connect Spark Streaming with KStreams
 |Sub Projects                                                                               |
 | ----------------------------------------------------------------------------------------- |
 |[spark-scala-enrich-topic](spark-scala-enrich-topic/README.md)        |
 |[spark-scala-functions](spark-scala-functions/README.md)              |
 
 
-## 3. KAFKA-UI
+## 7. KAFKA-UI
 This [project](kafka-ui/README.md) is to help Kafka developers to manage there clusters with UI.
 Using KAFKA-UI you can take advantage of all the maintenance and monitoring capabilities of Kafka using a click of a button.
