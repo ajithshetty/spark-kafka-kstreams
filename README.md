@@ -34,12 +34,10 @@ To help you use these projects we will be bringing up below set of containers.
 |[Spark Master](https://spark.apache.org/docs/latest/structured-streaming-programming-guide.html)   |  Apache Spark™ is a multi-language engine for executing data engineering, data science, and machine learning on single-node machines or clusters.                |
 |[Spark worker-1](https://spark.apache.org/docs/latest/structured-streaming-programming-guide.html) |                  |
 |[Spark worker-2](https://spark.apache.org/docs/latest/structured-streaming-programming-guide.html) |                  |
-|[Kafka UI](https://github.com/provectus/kafka-ui)                                                  | UI for Apache Kafka is a free, open-source web UI to monitor and manage Apache Kafka clusters.
-|
+|[Kafka UI](https://github.com/provectus/kafka-ui)                                                  | UI for Apache Kafka is a free, open-source web UI to monitor and manage Apache Kafka clusters.|
 |[KsqlDB Server](https://docs.ksqldb.io/en/latest/operate-and-deploy/installation/server-config/)   | ksqlDB is an event streaming database for Apache Kafka. It is distributed, scalable, reliable, and real-time.                 |
 |[KsqlDB CLI](https://docs.ksqldb.io/en/latest/operate-and-deploy/installation/cli-config/)         | ksqlDB CLI to one ksqlDB server per cluster.                 |
-|[Datagen](https://www.confluent.io/blog/easy-ways-generate-test-data-kafka/)                       | Generating data
-|
+|[Datagen](https://www.confluent.io/blog/easy-ways-generate-test-data-kafka/)                       | Generating data|
 |[Kafka Connect](https://www.confluent.io/blog/kafka-connect-tutorial/)                             | Kafka Connect is a free, open-source component of Apache Kafka® that serves as a centralized data hub for simple data integration between databases, key-value stores, search indexes, and file systems                 |
 |[MINIO](https://github.com/minio/minio)                                                            | inIO is a high-performance, S3 compatible object store. It is built for large scale AI/ML, data lake and database workloads. It runs on-prem and on any cloud (public or private) and from the data center to the edge.                 |
 
