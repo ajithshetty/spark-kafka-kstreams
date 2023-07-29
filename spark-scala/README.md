@@ -9,22 +9,7 @@ The Goals are as follows:
 2. Using Kafka Streams push the data to a topic
 3. Spark Structured Streaming will read the topic and write to S3
 
-## Architecture
-Image Here
 
-## Setting up properties for running the exercise code
-For easy setup we have the fully ready docker-compose.yaml file which will bring up the necessary containers.
-
-We have all the default configurations defined in a file:
-
-`src/main/resources/streams.properties`
-
-
-## Running the exercises
-
-Run the below script to start the containers
-
-`sh start_containers.sh`
 
 The first step before working with any of streams exercises will be to run `./gradlew build` to make generate all of the
 Avro objects from the schemas contained in the `/src/main/avro` directory.
