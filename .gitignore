@@ -4,7 +4,6 @@
 build/
 logs
 backup
-streams.properties
 ccloud.properties
 *.log
 buckets
