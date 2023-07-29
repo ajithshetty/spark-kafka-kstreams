@@ -265,3 +265,41 @@ services:
       #KAFKA_CLUSTER_METRICS_PORT: 9101
     volumes:
       - ./kafka-ui/config/config.yml:/etc/kafkaui/dynamic_config.yaml
+
+#    #https://github.com/rama-nallamilli/kafka-prometheus-monitoring/tree/master
+#  kafka-jmx-exporter:
+#    build: ./prometheus-jmx-exporter
+#    ports:
+#      - "8080:8080"
+#    links:
+#      - kafka
+#    environment:
+#      - JMX_PORT=9101
+#      - JMX_HOST=broker
+#      - HTTP_PORT=8080
+#      - JMX_EXPORTER_CONFIG_FILE=kafka.yml
+#
+#  prometheus:
+#    ports:
+#      - 9090:9090/tcp
+#    image: prom/prometheus:0.18.0
+#    volumes:
+#      - ./prometheus:/etc/prometheus
+#    links:
+#      - kafka-jmx-exporter
+#
+#  grafana:
+#    image: grafana/grafana:3.0.1
+#    ports:
+#      - 3000:3000/tcp
+#    links:
+#      - prometheus
+#    volumes:
+#      - ./graf-db:/var/lib/grafana
+#
+#  graf-db:
+#    image: infinityworks/graf-db:08
+#    links:
+#      - prometheus
+#    volumes:
+#      - ./graf-db:/var/lib/grafana/
