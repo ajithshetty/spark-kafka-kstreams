@@ -58,10 +58,12 @@ test {
 
 var basePackage = 'io.confluent.developer.'
 def exerciseMap = [
+        standard: basePackage + 'bank.standard.BankStreams',
+        branching: basePackage + 'bank.branching.BranchingStreams',
+        bankread: basePackage + 'bank.spark.BankReadSparkStreams',
+        bankwrite: basePackage + 'bank.spark.BankWriteSparkStreams',
         transactions: basePackage + 'transactions.TransactionsSparkStreams',
-        bankreadspark: basePackage + 'bankspark.BankReadSparkStreams',
-        bankwritespark: basePackage + 'bankspark.BankWriteSparkStreams',
-        basic    : basePackage + 'basic.BasicStreams']
+        basic: basePackage + 'basic.BasicStreams']
 
 task runStreams(type: Exec) {
 
@@ -77,6 +79,7 @@ task runStreams(type: Exec) {
         dependsOn assemble
         group = "Execution"
         println "Using example ${streamsFullPath}"
+        //println "Using path ${sourceSets.main.runtimeClasspath.getAsPath()}"
         description = "Run a Kafka Streams exercise"
         commandLine "java", "-classpath", sourceSets.main.runtimeClasspath.getAsPath(), streamsFullPath
     }

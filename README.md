@@ -75,7 +75,7 @@ Can be viewed from KAFKA UI. More details to follow.
 ## 4. Kafka REST API
 [List of Commands](kafka-rest/README.md)
 
-## 4. Connect KStreams with Spark Streaming
+## 5. Connect KStreams with Spark Streaming
 We have multiple example and use cases with Spark Streaming.
 
 |Sub Projects                                                                               |

@@ -1,8 +1,9 @@
-package io.confluent.developer.bankspark;
+package io.confluent.developer.bank.spark;
 
 import io.confluent.common.utils.TestUtils;
 import io.confluent.demo.CountAndSum;
 import io.confluent.developer.avro.Bank;
+import io.confluent.developer.avro.state;
 import io.confluent.kafka.streams.serdes.avro.SpecificAvroSerde;
 import org.apache.kafka.common.serialization.Serdes;
 import org.apache.kafka.streams.KafkaStreams;
@@ -21,23 +22,55 @@ import java.util.Map;
 import java.util.Properties;
 import java.util.concurrent.CountDownLatch;
 
-public class BankReadSparkStreams {
+public class BankWriteSparkStreams {
 
     public static Topology buildTopology(Properties allProps,
                                          final SpecificAvroSerde<Bank> bankSpecificAvroSerde){
 
         final StreamsBuilder builder=new StreamsBuilder();
 
+        final String inputTopic = allProps.getProperty("bank.spark.input.topic");
+        final String approvedTopic = allProps.getProperty("bank.spark.approved.topic");
+        final String rejectedTopic = allProps.getProperty("bank.spark.rejected.topic");
         final String sparkInputTopic = allProps.getProperty("bank.spark.aggregated.topic");
         final String sparkOutputTopic = allProps.getProperty("bank.spark.analysis.topic");
 
-        final KStream<String,String> bankKStream=builder.stream(sparkInputTopic, Consumed.with(Serdes.String(),Serdes.String()));
+        final KStream<Long,Bank> bankKStream=builder.stream(inputTopic, Consumed.with(Serdes.Long(),bankSpecificAvroSerde));
+        bankKStream.peek((key, value) ->System.out.println("Incoming record - key " + key + " value " + value));
+
+
+        KStream<Long, Bank> bankBalancesStream=bankKStream
+                .filter(
+                        (key, value) -> {
+                            if(value.getBalance()<=value.getWithdraw()){
+                                value.setBankTransactionState(state.REJECTED);
+                            }else{
+                                value.setBalance(value.getBalance()-value.getWithdraw());
+                                value.setBankTransactionState(state.APPROVED);
+                            }
+                            return true;
+                        });
+
+        bankBalancesStream.peek((key, value) -> System.out.println("Outgoing record - key " + key + " value " + value));
+
+        bankBalancesStream
+                .filter(((key, value) -> value.getBankTransactionState()== state.APPROVED))
+                .peek((key, value) -> System.out.println("Approved record - key " + key + " value " + value))
+                .to(approvedTopic);
+
+        bankBalancesStream
+                .filter(((key, value) -> value.getBankTransactionState()== state.REJECTED))
+                .peek((key, value) -> System.out.println("Rejected record - key " + key + " value " + value))
+        .to(rejectedTopic);
+
+
+        /*final KStream<Long,Bank> bankAggregatedTopic=builder
+                .stream(sparkInputTopic, Consumed.with(Serdes.Long(),bankSpecificAvroSerde));
         bankKStream.peek((key, value) ->System.out.println("Incoming Spark record - key " + key + " value " + value));
 
-
-        bankKStream
+        bankAggregatedTopic
         .peek((key, value) -> System.out.println("Outgoing Spark record - key " + key + " value " + value))
-                .to(sparkOutputTopic);
+                .to(sparkOutputTopic);*/
 
         return builder.build();
     }
@@ -69,7 +102,7 @@ public class BankReadSparkStreams {
         allProps.put("bank.input.topic", allProps.getProperty("bank.input.topic"));
         allProps.put("bank.output.topic", allProps.getProperty("bank.output.topic"));
 
-        //TopicLoader.runProducer();
+        TopicLoader.runProducer();
 
         Topology topology = buildTopology(allProps, bankSerde(allProps));
 

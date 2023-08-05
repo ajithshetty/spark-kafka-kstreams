@@ -1,10 +1,11 @@
-package io.confluent.developer.bank;
+package io.confluent.developer.bank.branching;
 
 import io.confluent.developer.StreamsUtils;
 import io.confluent.developer.avro.Bank;
 import io.confluent.developer.avro.state;
 import io.confluent.kafka.serializers.KafkaAvroSerializer;
 import org.apache.kafka.clients.admin.Admin;
+import org.apache.kafka.clients.admin.NewTopic;
 import org.apache.kafka.clients.producer.*;
 import org.apache.kafka.common.serialization.LongSerializer;
 
@@ -27,12 +28,15 @@ public class TopicLoader {
 
         try(Admin adminClient = Admin.create(properties);
             Producer<Long, Bank> producer = new KafkaProducer<>(properties)) {
-            final String inputTopic = properties.getProperty("bank.input.topic");
-            final String outputTopic = properties.getProperty("bank.output.topic");
-            List <org.apache.kafka.clients.admin.NewTopic> topics = Arrays.asList(
+            final String inputTopic = properties.getProperty("bank.branch.input.topic");
+            final String approvedTopic = properties.getProperty("bank.branch.approved.topic");
+            final String rejectedTopic = properties.getProperty("bank.branch.rejected.topic");
+            final String mergedTopic = properties.getProperty("bank.branch.merged.topic");
+            List<NewTopic> topics = Arrays.asList(
                     StreamsUtils.createTopic(inputTopic),
-                    StreamsUtils.createTopic(outputTopic));
-            //adminClient.deleteTopics(Arrays.asList(inputTopic, outputTopic));
+                    StreamsUtils.createTopic(approvedTopic),
+                    StreamsUtils.createTopic(rejectedTopic),
+                    StreamsUtils.createTopic(mergedTopic));
             adminClient.createTopics(topics);
 
 
