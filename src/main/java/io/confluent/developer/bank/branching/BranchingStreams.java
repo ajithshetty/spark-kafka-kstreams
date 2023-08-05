@@ -1,7 +1,6 @@
-package io.confluent.developer.bank;
+package io.confluent.developer.bank.branching;
 
 import io.confluent.common.utils.TestUtils;
-import io.confluent.demo.CountAndSum;
 import io.confluent.developer.avro.Bank;
 import io.confluent.developer.avro.state;
 import io.confluent.kafka.streams.serdes.avro.SpecificAvroSerde;
@@ -10,8 +9,7 @@ import org.apache.kafka.streams.KafkaStreams;
 import org.apache.kafka.streams.StreamsBuilder;
 import org.apache.kafka.streams.StreamsConfig;
 import org.apache.kafka.streams.Topology;
-import org.apache.kafka.streams.kstream.Consumed;
-import org.apache.kafka.streams.kstream.KStream;
+import org.apache.kafka.streams.kstream.*;
 
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -22,55 +20,56 @@ import java.util.Map;
 import java.util.Properties;
 import java.util.concurrent.CountDownLatch;
 
-public class BanksStreams {
+public class BranchingStreams {
 
     public static Topology buildTopology(Properties allProps,
                                          final SpecificAvroSerde<Bank> bankSpecificAvroSerde){
 
         final StreamsBuilder builder=new StreamsBuilder();
 
-        final String inputTopic = allProps.getProperty("bank.input.topic");
-        final String outputTopic = allProps.getProperty("bank.output.topic");
-        //final String rejectedTopic = allProps.getProperty("bank.rejected.topic");
+        final String inputTopic = allProps.getProperty("bank.branch.input.topic");
+        final String approvedTopic = allProps.getProperty("bank.branch.approved.topic");
+        final String rejectedTopic = allProps.getProperty("bank.branch.rejected.topic");
+        final String mergedTopic = allProps.getProperty("bank.branch.merged.topic");
 
         final KStream<Long,Bank> bankKStream=builder.stream(inputTopic, Consumed.with(Serdes.Long(),bankSpecificAvroSerde));
         bankKStream.peek((key, value) ->System.out.println("Incoming record - key " + key + " value " + value));
 
 
-       KStream<Long, Bank> bankBalancesStream=bankKStream
+        KStream<Long, Bank> bankBalancesStream=bankKStream
                 .filter(
-                (key, value) -> {
-                        if(value.getBalance()<=value.getWithdraw()){
-                            value.setBankTransactionState(state.REJECTED);
-                        }else{
-                            value.setBalance(value.getBalance()-value.getWithdraw());
-                            value.setBankTransactionState(state.APPROVED);
-                        }
-                    return true;
-                });
+                        (key, value) -> {
+                            if(value.getBalance()<=value.getWithdraw()){
+                                value.setBankTransactionState(state.REJECTED);
+                            }else{
+                                value.setBalance(value.getBalance()-value.getWithdraw());
+                                value.setBankTransactionState(state.APPROVED);
+                            }
+                            return true;
+                        });
 
         bankBalancesStream.peek((key, value) -> System.out.println("Outgoing record - key " + key + " value " + value));
 
-        bankBalancesStream
-                .filter(((key, value) -> value.getBankTransactionState()== state.APPROVED))
-                .peek((key, value) -> System.out.println("Approved record - key " + key + " value " + value))
-                .to(outputTopic);
+        final Map<String,KStream<Long, Bank>> branches= bankBalancesStream.split()
+                .branch((key, value) -> value.getBankTransactionState()== state.APPROVED, Branched.as("APPROVED"))
+                .branch((key, value) -> value.getBankTransactionState()== state.REJECTED, Branched.as("REJECTED"))
+                .noDefaultBranch();
 
-        bankBalancesStream
-                .filter(((key, value) -> value.getBankTransactionState()== state.REJECTED))
-                .peek((key, value) -> System.out.println("Rejected record - key " + key + " value " + value));
-                //.to(outputTopic);
+        branches.get("APPROVED")
+                .peek((key, value) -> System.out.println("Outgoing APPROVED record - key " + key + " value " + value))
+                .to(approvedTopic);
+
+        branches.get("REJECTED")
+                .peek((key, value) -> System.out.println("Outgoing REJECTED record - key " + key + " value " + value))
+                .to(rejectedTopic);
+
+        branches.get("REJECTED").merge(branches.get("APPROVED"))
+                .peek((key, value) -> System.out.println("Outgoing MERGED record - key " + key + " value " + value))
+                .to(mergedTopic);
 
         return builder.build();
     }
 
-    public static SpecificAvroSerde<CountAndSum> getCountAndSumSerde(Properties allProps) {
-        SpecificAvroSerde<CountAndSum> serde = new SpecificAvroSerde<>();
-        Map<String,String> config= new HashMap<>();
-        config.put("schema.registry.url",allProps.getProperty("schema.registry.url"));
-        serde.configure(config,false);
-        return serde;
-    }
 
     private static SpecificAvroSerde<Bank> bankSerde(final Properties allProps){
         final SpecificAvroSerde<Bank> serde= new SpecificAvroSerde<>();
@@ -86,10 +85,12 @@ public class BanksStreams {
         try (InputStream inputStream = new FileInputStream("src/main/resources/streams.properties")) {
             allProps.load(inputStream);
         }
-        allProps.put(StreamsConfig.APPLICATION_ID_CONFIG, allProps.getProperty("bank.application.id"));
+        allProps.put(StreamsConfig.APPLICATION_ID_CONFIG, allProps.getProperty("bank.branch.application.id"));
         allProps.put(StreamsConfig.STATE_DIR_CONFIG, TestUtils.tempDirectory().getPath());
-        allProps.put("bank.input.topic", allProps.getProperty("bank.input.topic"));
-        allProps.put("bank.output.topic", allProps.getProperty("bank.output.topic"));
+        allProps.put("bank.branch.input.topic", allProps.getProperty("bank.branch.input.topic"));
+        allProps.put("bank.branch.approved.topic", allProps.getProperty("bank.branch.approved.topic"));
+        allProps.put("bank.branch.rejected.topic", allProps.getProperty("bank.branch.rejected.topic"));
+        allProps.put("bank.branch.merged.topic", allProps.getProperty("bank.branch.merged.topic"));
 
         TopicLoader.runProducer();
 

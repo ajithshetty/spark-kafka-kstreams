@@ -1,11 +1,10 @@
-package io.confluent.developer.bankspark;
+package io.confluent.developer.bank.standard;
 
 import io.confluent.developer.StreamsUtils;
 import io.confluent.developer.avro.Bank;
 import io.confluent.developer.avro.state;
 import io.confluent.kafka.serializers.KafkaAvroSerializer;
 import org.apache.kafka.clients.admin.Admin;
-import org.apache.kafka.clients.admin.NewTopic;
 import org.apache.kafka.clients.producer.*;
 import org.apache.kafka.common.serialization.LongSerializer;
 
@@ -28,17 +27,14 @@ public class TopicLoader {
 
         try(Admin adminClient = Admin.create(properties);
             Producer<Long, Bank> producer = new KafkaProducer<>(properties)) {
-            final String inputTopic = properties.getProperty("bank.spark.input.topic");
-            final String approvedTopic = properties.getProperty("bank.spark.approved.topic");
-            final String rejectedTopic = properties.getProperty("bank.spark.rejected.topic");
-            final String sparkInputTopic = properties.getProperty("bank.spark.aggregated.topic");
-            final String sparkOutputTopic = properties.getProperty("bank.spark.analysis.topic");
-            List<NewTopic> topics = Arrays.asList(
+            final String inputTopic = properties.getProperty("bank.input.topic");
+            final String outputTopic = properties.getProperty("bank.output.topic");
+            final String rejectedTopic = properties.getProperty("bank.rejected.topic");
+            List <org.apache.kafka.clients.admin.NewTopic> topics = Arrays.asList(
                     StreamsUtils.createTopic(inputTopic),
-                    StreamsUtils.createTopic(approvedTopic),
-                    StreamsUtils.createTopic(rejectedTopic),
-                    StreamsUtils.createTopic(sparkInputTopic),
-                    StreamsUtils.createTopic(sparkOutputTopic));
+                    StreamsUtils.createTopic(outputTopic),
+                    StreamsUtils.createTopic(rejectedTopic));
+            //adminClient.deleteTopics(Arrays.asList(inputTopic, outputTopic));
             adminClient.createTopics(topics);
 
 
