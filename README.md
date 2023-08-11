@@ -57,7 +57,7 @@ Run the below script to start the containers
 ## 1. Kafka Kstreams
 
 This section is cloned from [learn-kafka-courses](https://github.com/confluentinc/learn-kafka-courses/tree/main)
-And we will only be working on submodule [kafka-streams](https://github.com/confluentinc/learn-kafka-courses/tree/main/kafka-streams)
+And we will only be working on submodule [kafka-streams](./gradlew runStreams -Pargs=)
 
 We have extended the Above repo to have our specific requirements and added few extra modules.
 
