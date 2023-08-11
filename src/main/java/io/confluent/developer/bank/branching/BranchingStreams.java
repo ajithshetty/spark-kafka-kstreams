@@ -50,14 +50,10 @@ public class BranchingStreams {
 
         bankBalancesStream.peek((key, value) -> System.out.println("Outgoing record - key " + key + " value " + value));
 
-        final Map<String,KStream<Long, Bank>> branches= bankBalancesStream.split()
+        Map<String,KStream<Long, Bank>> branches= bankBalancesStream.split()
                 .branch((key, value) -> value.getBankTransactionState()== state.APPROVED, Branched.as("APPROVED"))
                 .branch((key, value) -> value.getBankTransactionState()== state.REJECTED, Branched.as("REJECTED"))
                 .noDefaultBranch();
-
-        branches.get("APPROVED")
-                .peek((key, value) -> System.out.println("Outgoing APPROVED record - key " + key + " value " + value))
-                .to(approvedTopic);
 
         branches.get("REJECTED")
                 .peek((key, value) -> System.out.println("Outgoing REJECTED record - key " + key + " value " + value))
@@ -66,6 +62,10 @@ public class BranchingStreams {
         branches.get("REJECTED").merge(branches.get("APPROVED"))
                 .peek((key, value) -> System.out.println("Outgoing MERGED record - key " + key + " value " + value))
                 .to(mergedTopic);
+
+        branches.get("APPROVED")
+                .peek((key, value) -> System.out.println("Outgoing APPROVED record - key " + key + " value " + value))
+                .to(approvedTopic);
 
         return builder.build();
     }

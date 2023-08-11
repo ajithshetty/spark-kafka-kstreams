@@ -69,7 +69,7 @@ public class TopicLoader {
                     Bank.newBuilder()
                             .setAccountId(1004)
                             .setTime(instant.plusSeconds(30L).toEpochMilli())
-                            .setBalance(1000)
+                            .setBalance(100)
                             .setWithdraw(800)
                             .setBankTransactionState(state.CREATED)
                             .build(),

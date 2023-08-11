@@ -40,15 +40,6 @@ public class TransactionsSparkStreams {
                 .peek((key, value) -> System.out.println("Rejected record - key " + key + " value " + value))
         .to(outputTopic);
 
-
-        /*final KStream<Long,Bank> bankAggregatedTopic=builder
-                .stream(sparkInputTopic, Consumed.with(Serdes.Long(),bankSpecificAvroSerde));
-        bankKStream.peek((key, value) ->System.out.println("Incoming Spark record - key " + key + " value " + value));
-
-        bankAggregatedTopic
-        .peek((key, value) -> System.out.println("Outgoing Spark record - key " + key + " value " + value))
-                .to(sparkOutputTopic);*/
-
         return builder.build();
     }
 
