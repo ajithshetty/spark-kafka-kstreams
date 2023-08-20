@@ -19,7 +19,7 @@ RUN pip3 install -r requirements.txt
 
 COPY spark-python/jars.txt .
 
-COPY spark-python/get-jars.sh .
+COPY spark-python/get_jars.sh .
 RUN sh get-jars.sh
 
 FROM builder as apache-spark
@@ -44,6 +44,6 @@ touch $SPARK_WORKER_LOG && \
 ln -sf /dev/stdout $SPARK_MASTER_LOG && \
 ln -sf /dev/stdout $SPARK_WORKER_LOG
 
-COPY spark-python/start-spark.sh /
+COPY spark-python/start_spark.sh /
 
 CMD ["/bin/bash", "/start-spark.sh"]
