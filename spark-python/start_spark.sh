@@ -1,4 +1,4 @@
-#start-spark.sh
+#start_spark.sh
 #!/bin/bash
 . "/opt/spark/bin/load-spark-env.sh"
 
